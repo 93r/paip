@@ -10,7 +10,7 @@ using namespace std::placeholders; // for std::bind's _1
  * Because it's about symbolic computing some symbol types are needed.
  */
 using symbol = std::string;
-using symlist = std::vector<std::string>;
+using symlist = std::vector<symbol>;
 /**
  * An operation
  */
