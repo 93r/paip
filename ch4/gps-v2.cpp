@@ -94,11 +94,11 @@ gps::gps(const symlist& state, const symlist& goals, const oplist& ops)
 		goals_(goals),
 		ops_(ops)
 {
-		std::sort(state_.begin(), state_.end());
-		for (auto& op : ops_) {
-			std::sort(op.del_list.begin(), op.del_list.end());
-			std::sort(op.add_list.begin(), op.add_list.end());
-		}
+	std::sort(state_.begin(), state_.end());
+	for (auto& op : ops_) {
+		std::sort(op.del_list.begin(), op.del_list.end());
+		std::sort(op.add_list.begin(), op.add_list.end());
+	}
 }
 
 bool gps::operator()()
