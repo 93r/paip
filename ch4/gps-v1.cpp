@@ -62,8 +62,7 @@ class gps {
 			const auto& copy_if_pred = std::bind(&gps::appropriate_p, this, goal, _1);
 			std::copy_if(ops_.begin(), ops_.end(), std::back_inserter(tmp), copy_if_pred);
 			for (auto& i : tmp) { std::cout << ">> " << i.action << "\n"; }
-			if (std::any_of(tmp.begin(), tmp.end(), any_of_pred)) return true;
-			return false;
+			return std::any_of(tmp.begin(), tmp.end(), any_of_pred);
 		}
 		/**
 		 * Print a message and update state_ if op is applicable.

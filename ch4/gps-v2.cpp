@@ -124,8 +124,7 @@ bool gps::achieve(const symbol& goal)
 
 	std::copy_if(ops_.begin(), ops_.end(), std::back_inserter(tmp), copy_if_pred);
 	for (auto& i : tmp) { std::cout << ">> " << i.action << "\n"; }
-	if (std::any_of(tmp.begin(), tmp.end(), any_of_pred)) return true;
-	return false;
+	return std::any_of(tmp.begin(), tmp.end(), any_of_pred);
 }
 
 bool gps::apply_op(const op& op)

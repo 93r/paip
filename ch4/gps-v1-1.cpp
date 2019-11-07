@@ -28,10 +28,7 @@ gps::gps(const symlist& state, const symlist& goals, const oplist& ops)
 bool gps::operator()() {
 	auto pred = std::bind(&gps::achieve, this, _1);
 
-	if (std::all_of(goals_.begin(), goals_.end(), pred))
-		return true;
-
-	return false;
+	return std::all_of(goals_.begin(), goals_.end(), pred);
 }
 
 /**
@@ -47,8 +44,7 @@ bool gps::achieve(const symbol& goal) {
 	const auto& copy_if_pred = std::bind(&gps::appropriate_p, this, goal, _1);
 	std::copy_if(ops_.begin(), ops_.end(), std::back_inserter(tmp), copy_if_pred);
 	for (auto& i : tmp) { std::cout << ">> " << i.action << "\n"; }
-	if (std::any_of(tmp.begin(), tmp.end(), any_of_pred)) return true;
-	return false;
+	return std::any_of(tmp.begin(), tmp.end(), any_of_pred);
 }
 
 /**
