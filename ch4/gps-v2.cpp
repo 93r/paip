@@ -160,9 +160,9 @@ bool gps::appropriate_p(const symbol& goal, const op& op) const { return member_
 bool gps::member_p(const symbol& item, const symlist& seq) const { return std::find(seq.begin(), seq.end(), item) != seq.end(); }
 bool gps::subset_p(const symlist& items, const symlist& seq) const
 {
-	auto pred = [&](const auto& i) {
+	auto pred = [&seq](const auto& i) {
 		return std::any_of(seq.begin(), seq.end(),
-				[&](const auto& j) {
+				[&i](const auto& j) {
 				return i == j;
 				});
 	};
