@@ -34,10 +34,6 @@ class gps {
 		 * like a Functor.
 		 */
 		bool operator()();
-		/**
-		 * Is intermediate information wanted? (setter)
-		 */
-		gps& want_intermediate_info(bool is_want_ii) { want_ii_ = is_want_ii; return *this; }
 	private: /* Major Functions */
 		/**
 		 * Try to achieve each goal, then make sure they hold.
@@ -64,8 +60,6 @@ class gps {
 		 * Is one set (items) wholly contained in another (seq)?
 		 */
 		bool subset_p(const symlist& items, const symlist& seq) const;
-	private: /* Auxiliary Functions */
-		void info(const std::string& msg) const { if (want_ii_) { std::cout << msg << "\n"; } }
 	private: /* Special Variables */
 		/**
 		 * The current state: a list of conditions.
@@ -116,13 +110,13 @@ bool gps::achieve_all(const symlist& goals)
 bool gps::achieve(const symbol& goal)
 {
 	if (member_p(goal, state_)) return true;
-	auto any_of_pred = [this] (const auto& v) { return apply_op(v); };
-	auto copy_if_pred = [this, &goal] (const auto& v) { return appropriate_p(goal, v); };
+	auto any_of_apply_op = [this] (const auto& v) { return apply_op(v); };
+	auto copy_if_appropriate_goal = [this, &goal] (const auto& v) { return appropriate_p(goal, v); };
 	oplist tmp;
 
-	std::copy_if(ops_.begin(), ops_.end(), std::back_inserter(tmp), copy_if_pred);
+	std::copy_if(ops_.begin(), ops_.end(), std::back_inserter(tmp), copy_if_appropriate_goal);
 	for (auto& i : tmp) { std::cout << ">> " << i.action << "\n"; }
-	return std::any_of(tmp.begin(), tmp.end(), any_of_pred);
+	return std::any_of(tmp.begin(), tmp.end(), any_of_apply_op);
 }
 
 bool gps::apply_op(const op& op)
