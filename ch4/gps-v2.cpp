@@ -2,9 +2,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <functional>
 #include <iterator>
-using namespace std::placeholders; // for std::bind's _1
 
 /**
  * Because it's about symbolic computing some symbol types are needed.
@@ -103,13 +101,13 @@ gps::gps(const symlist& state, const symlist& goals, const oplist& ops)
 
 bool gps::operator()()
 {
-	auto pred = std::bind(&gps::achieve, this, _1);
+	auto pred = [this] (const auto& v) { return achieve(v); };
 	return std::all_of(goals_.begin(), goals_.end(), pred);
 }
 
 bool gps::achieve_all(const symlist& goals)
 {
-	auto pred = std::bind(&gps::achieve, this, _1);
+	auto pred = [this] (const auto& v) { return achieve(v); };
 	return std::all_of(goals.begin(), goals.end(), pred)
 		&&
 		subset_p(goals, state_);
@@ -118,8 +116,8 @@ bool gps::achieve_all(const symlist& goals)
 bool gps::achieve(const symbol& goal)
 {
 	if (member_p(goal, state_)) return true;
-	const auto& any_of_pred = std::bind(&gps::apply_op, this, _1);
-	const auto& copy_if_pred = std::bind(&gps::appropriate_p, this, goal, _1);
+	auto any_of_pred = [this] (const auto& v) { return apply_op(v); };
+	auto copy_if_pred = [this, &goal] (const auto& v) { return appropriate_p(goal, v); };
 	oplist tmp;
 
 	std::copy_if(ops_.begin(), ops_.end(), std::back_inserter(tmp), copy_if_pred);
@@ -130,7 +128,7 @@ bool gps::achieve(const symbol& goal)
 bool gps::apply_op(const op& op)
 {
 	const symlist& sl = op.preconds;
-	auto pred = std::bind(&gps::achieve, this, _1);
+	auto pred = [this] (const auto& v) { return achieve(v); };
 
 	if (std::all_of(sl.begin(), sl.end(), pred)) {
 		std::cout << " executing op-action " << op.action << "\n";
